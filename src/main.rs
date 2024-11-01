@@ -1,11 +1,6 @@
 use solver::*;
 use std::io::Read;
 
-fn alg_string(m: Option<Vec<Move>>) -> String {
-    m.map(|a| a.iter().map(|m| format!("{} ", m)).collect())
-        .unwrap_or(String::new())
-}
-
 fn ida(f: &SuperFloppy, max_depth: usize, table: &PruningTable) -> Vec<Move> {
     let start = std::time::Instant::now();
     for i in 0..max_depth {

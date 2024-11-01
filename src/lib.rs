@@ -234,6 +234,7 @@ fn face_check(m: Moves, solution: &mut Vec<Move>) -> bool {
     if Some(m) == solution.last().map(|a| a.mv) {
         return true;
     }
+
     if solution.len() > 1 {
         if same_axis(m, solution.last().map(|a| a.mv).unwrap())
             && m == solution[solution.len() - 2].mv
@@ -242,7 +243,18 @@ fn face_check(m: Moves, solution: &mut Vec<Move>) -> bool {
         }
     }
 
+    match m {
+        Moves::U => if solution.last().map(|a|a.mv) == Some(Moves::D) { return true; },
+        Moves::R => if solution.last().map(|a|a.mv) == Some(Moves::L) { return true; },
+        _ => {},
+    }
+
     false
+}
+
+pub fn alg_string(m: Option<Vec<Move>>) -> String {
+    m.map(|a| a.iter().map(|m| format!("{} ", m)).collect())
+        .unwrap_or(String::new())
 }
 
 fn search_inner(
@@ -256,7 +268,6 @@ fn search_inner(
     }
 
     if pruning_table.contains_key(&f.corners) {
-        // if pruning_table[&f.corners] > current_depth {
         if current_depth < pruning_table[&f.corners] {
             return false;
         }
