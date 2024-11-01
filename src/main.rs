@@ -42,7 +42,7 @@ fn get_pruning_table() -> PruningTable {
             let mut buffer = vec![];
             file.read_to_end(&mut buffer);
             bincode::deserialize(&buffer).unwrap()
-        },
+        }
         _ => save_pruning_table(),
     }
 }
@@ -50,11 +50,15 @@ fn get_pruning_table() -> PruningTable {
 fn main() {
     let table = get_pruning_table();
     println!("Table loaded: {}", table.len());
-    let mut buffer = String::new();
-    std::io::stdin().read_line(&mut buffer);
-    let alg = parse(&buffer);
-    let mut f = SuperFloppy::solved();
-    f.do_moves(alg);
-    println!("{f:?} solved {}", f.is_solved());
+    let f = if std::env::args().nth(1).as_deref() == Some("--scramble") {
+        SuperFloppy::random_state()
+    } else {
+        let mut buffer = String::new();
+        std::io::stdin().read_line(&mut buffer);
+        let alg = parse(&buffer);
+        let mut f = SuperFloppy::solved();
+        f.do_moves(alg);
+        f
+    };
     println!("Solution: {}", alg_string(Some(ida(&f, 20, &table))));
 }

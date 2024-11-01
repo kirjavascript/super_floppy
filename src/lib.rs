@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 // 0 == solved
 // 1 == clockwise
@@ -119,6 +119,35 @@ impl SuperFloppy {
         self == &Self::solved()
     }
 
+    pub fn random_state() -> Self {
+        use rand::prelude::*;
+        let mut rng = rand::thread_rng();
+        let mut corners = [
+            Some(Corner::BL),
+            None,
+            Some(Corner::BR),
+            None,
+            Some(Corner::FR),
+            None,
+            Some(Corner::FL),
+            None,
+            None,
+            None,
+            None,
+            None,
+        ];
+        corners.shuffle(&mut rng);
+        Self {
+            edges: [
+                Edge(rng.gen_range(0..=3)),
+                Edge(rng.gen_range(0..=3)),
+                Edge(rng.gen_range(0..=3)),
+                Edge(rng.gen_range(0..=3)),
+            ],
+            corners,
+        }
+    }
+
     pub fn do_moves(&mut self, m: Vec<Move>) {
         for mv in m {
             self.do_move(mv);
@@ -201,7 +230,27 @@ fn same_axis(mv: Moves, mv2: Moves) -> bool {
     }
 }
 
-fn search_inner(f: &SuperFloppy, current_depth: usize, solution: &mut Vec<Move>, pruning_table: &PruningTable) -> bool {
+fn face_check(m: Moves, solution: &mut Vec<Move>) -> bool {
+    if Some(m) == solution.last().map(|a| a.mv) {
+        return true;
+    }
+    if solution.len() > 1 {
+        if same_axis(m, solution.last().map(|a| a.mv).unwrap())
+            && m == solution[solution.len() - 2].mv
+        {
+            return true;
+        }
+    }
+
+    false
+}
+
+fn search_inner(
+    f: &SuperFloppy,
+    current_depth: usize,
+    solution: &mut Vec<Move>,
+    pruning_table: &PruningTable,
+) -> bool {
     if current_depth == 0 {
         return f.is_solved();
     }
@@ -214,15 +263,8 @@ fn search_inner(f: &SuperFloppy, current_depth: usize, solution: &mut Vec<Move>,
     }
 
     for m in [Moves::U, Moves::R, Moves::D, Moves::L] {
-        if Some(m) == solution.last().map(|a| a.mv) {
+        if face_check(m, solution) {
             continue;
-        }
-        if solution.len() > 1 {
-            if same_axis(m, solution.last().map(|a| a.mv).unwrap())
-                && m == solution[solution.len() - 2].mv
-            {
-                continue;
-            }
         }
         for o in 1..=3 {
             let mov = Move { mv: m, order: o };
@@ -239,7 +281,11 @@ fn search_inner(f: &SuperFloppy, current_depth: usize, solution: &mut Vec<Move>,
     false
 }
 
-pub fn search(f: &SuperFloppy, max_depth: usize, pruning_table: &PruningTable) -> Option<Vec<Move>> {
+pub fn search(
+    f: &SuperFloppy,
+    max_depth: usize,
+    pruning_table: &PruningTable,
+) -> Option<Vec<Move>> {
     let mut soln = Vec::with_capacity(max_depth);
     if search_inner(f, max_depth, &mut soln, pruning_table) {
         return Some(soln);
@@ -250,12 +296,18 @@ pub fn search(f: &SuperFloppy, max_depth: usize, pruning_table: &PruningTable) -
 pub type PruningTable = std::collections::HashMap<[Option<Corner>; 12], usize>;
 pub fn gen_pruning_table(max_depth: usize) -> PruningTable {
     let mut table = PruningTable::new();
-    gen_pruning_table_inner(&SuperFloppy::solved(), 0, max_depth, &mut table);
+    let mut soln = vec![];
+    gen_pruning_table_inner(&SuperFloppy::solved(), 0, max_depth, &mut table, &mut soln);
     table
 }
 
-
-pub fn gen_pruning_table_inner(f: &SuperFloppy, current_depth: usize, max_depth: usize, table: &mut PruningTable) {
+pub fn gen_pruning_table_inner(
+    f: &SuperFloppy,
+    current_depth: usize,
+    max_depth: usize,
+    table: &mut PruningTable,
+    soln: &mut Vec<Move>,
+) {
     if current_depth == max_depth {
         return;
     }
@@ -269,11 +321,16 @@ pub fn gen_pruning_table_inner(f: &SuperFloppy, current_depth: usize, max_depth:
     }
 
     for m in [Moves::U, Moves::R, Moves::D, Moves::L] {
+        if face_check(m, soln) {
+            continue;
+        }
         for o in 1..=3 {
             let mov = Move { mv: m, order: o };
             let mut nf = f.clone();
             nf.do_move(mov);
-            gen_pruning_table_inner(&nf, current_depth + 1, max_depth, table);
+            soln.push(mov);
+            gen_pruning_table_inner(&nf, current_depth + 1, max_depth, table, soln);
+            soln.pop();
         }
     }
 }
