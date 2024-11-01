@@ -81,8 +81,7 @@ impl std::fmt::Display for Move {
             } else {
                 ""
             }
-        );
-        Ok(())
+        )
     }
 }
 
@@ -179,6 +178,7 @@ impl SuperFloppy {
         }
     }
 
+    #[allow(non_snake_case)]
     fn do_U(&mut self) {
         self.edges[0] = Edge((self.edges[0].0 + 1) % 4);
         let prev_corners = self.corners;
@@ -189,6 +189,7 @@ impl SuperFloppy {
         self.corners[CornerOrder::DB as usize] = prev_corners[CornerOrder::BL as usize];
     }
 
+    #[allow(non_snake_case)]
     fn do_R(&mut self) {
         self.edges[1] = Edge((self.edges[1].0 + 1) % 4);
         let prev_corners = self.corners;
@@ -199,6 +200,7 @@ impl SuperFloppy {
         self.corners[CornerOrder::DR as usize] = prev_corners[CornerOrder::BR as usize];
     }
 
+    #[allow(non_snake_case)]
     fn do_D(&mut self) {
         self.edges[2] = Edge((self.edges[2].0 + 1) % 4);
         let prev_corners = self.corners;
@@ -209,6 +211,7 @@ impl SuperFloppy {
         self.corners[CornerOrder::DF as usize] = prev_corners[CornerOrder::FR as usize];
     }
 
+    #[allow(non_snake_case)]
     fn do_L(&mut self) {
         self.edges[3] = Edge((self.edges[3].0 + 1) % 4);
         let prev_corners = self.corners;

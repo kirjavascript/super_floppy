@@ -35,7 +35,7 @@ fn get_pruning_table() -> PruningTable {
     match std::fs::File::open("prune.table") {
         Ok(mut file) => {
             let mut buffer = vec![];
-            file.read_to_end(&mut buffer);
+            file.read_to_end(&mut buffer).unwrap();
             bincode::deserialize(&buffer).unwrap()
         }
         _ => save_pruning_table(),
@@ -49,7 +49,7 @@ fn main() {
         SuperFloppy::random_state()
     } else {
         let mut buffer = String::new();
-        std::io::stdin().read_line(&mut buffer);
+        std::io::stdin().read_line(&mut buffer).unwrap();
         let alg = parse(&buffer);
         let mut f = SuperFloppy::solved();
         f.do_moves(alg);
