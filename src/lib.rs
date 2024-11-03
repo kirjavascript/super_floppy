@@ -264,9 +264,15 @@ fn search_inner(
     f: &SuperFloppy,
     current_depth: usize,
     solution: &mut Vec<Move>,
+    //solutions: &mut Vec<Vec<Move>>,
     pruning_table: &PruningTable,
 ) -> bool {
     if current_depth == 0 {
+        //if f.is_solved() {
+        //    //solutions.push(
+        //    println!("Found: {}", alg_string(Some(solution.clone())));
+        //}
+        //return false;
         return f.is_solved();
     }
 
