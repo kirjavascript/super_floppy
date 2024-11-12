@@ -1,9 +1,9 @@
 use solver::*;
 use std::io::Read;
 
-fn ida(f: &SuperFloppy, max_depth: usize, table: &PruningTable) -> Vec<Move> {
+fn ida(f: &SuperFloppy, max_depth: usize, table: &PruningTable, start_depth: usize) -> Vec<Move> {
     let start = std::time::Instant::now();
-    for i in 0..max_depth {
+    for i in start_depth..max_depth {
         println!("Searching depth {i}...");
         let moves = search(f, i, table);
         if let Some(moves) = moves {
@@ -45,15 +45,15 @@ fn get_pruning_table() -> PruningTable {
 fn main() {
     let table = get_pruning_table();
     println!("Table loaded: {}", table.len());
-    let f = if std::env::args().nth(1).as_deref() == Some("--scramble") {
-        SuperFloppy::random_state()
+    let (start_depth, f) = if std::env::args().nth(1).as_deref() == Some("--scramble") {
+        (9, SuperFloppy::random_state())
     } else {
         let mut buffer = String::new();
         std::io::stdin().read_line(&mut buffer).unwrap();
         let alg = parse(&buffer);
         let mut f = SuperFloppy::solved();
         f.do_moves(alg);
-        f
+        (0, f)
     };
-    println!("Solution: {}", alg_string(Some(ida(&f, 20, &table))));
+    println!("Solution: {}", alg_string(Some(ida(&f, 20, &table, start_depth))));
 }
