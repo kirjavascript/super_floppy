@@ -1,0 +1,11 @@
+#ghost {
+    position: absolute;
+    left: -999px;
+    right: -999px;
+}
+
+pre {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
