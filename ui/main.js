@@ -1,6 +1,5 @@
 import './style.css';
-import Zdog from 'zdog';
-import { TAU } from 'zdog';
+import Zdog, { TAU } from 'zdog';
 
 const element = document.querySelector('#zdog');
 const ghostEl = document.querySelector('#ghost');
@@ -239,17 +238,10 @@ const cornerPos = [
     { y: distance, x: -distance },
 ];
 
-const cornerRotate = {
-    BL: [0, 1, 5, 4, 0, 3, 5, 2, 3, 2, 1, 4],
-    BR: [5, 3, 0, 2, 5, 1, 0, 4, 1, 4, 3, 2],
-};
+// rotations
 
-const rotateLookup = [
-    {}, { z: quarter },
-    {x: -quarter},
-    {z: -quarter},
-    {x: -quarter, z: quarter * 2 },
-    {z: quarter * 2}];
+const rotatePath = '|z|zz|zzxxx|zzxx|xxzzz|xx|xxx|zzz|zzx|xxz|x'.split('|');
+const rotateOrigin = {BL:0,BR:2,FR:4,FL:6};
 
 function renderState() {
     // reset
@@ -281,10 +273,18 @@ function renderState() {
             ...cornerPos[cornerIndex],
         };
 
-        const rotate = cornerRotate[corner]?.[cornerIndex];
+        const originIndex = rotateOrigin[corner];
 
-        if (rotate !== undefined) {
-            obj.rotate = rotateLookup[rotate];
+        if (originIndex !== undefined) {
+            let rotations = rotatePath[originIndex] + rotatePath[cornerIndex];
+            const rotate = { z: 0, x: 0 };
+            if ((corner === 'FR' || corner === 'FL') && [1, 5, 8, 10].includes(cornerIndex)) {
+                rotations += 'zz';
+            }
+            [...rotations].forEach(ch => { rotate[ch]++ });
+            rotate.z *= quarter;
+            rotate.x *= quarter;
+            obj.rotate = rotate;
         }
 
         obj.cornerIndex = cornerIndex;
