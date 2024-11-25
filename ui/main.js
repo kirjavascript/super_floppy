@@ -1,6 +1,14 @@
 import './style.css';
 import Zdog, { TAU } from 'zdog';
 
+/* bindings needed:
+ *
+ * set_state
+ * get_state
+ * set_random_state
+ * get_solutions
+ */
+
 const element = document.querySelector('#zdog');
 const ghostEl = document.querySelector('#ghost');
 
