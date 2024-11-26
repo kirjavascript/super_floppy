@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 // 1 == clockwise
 // 2 == double
 // 3 == anti-clockwise
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 struct Edge(u8);
 
 #[derive(Clone, Copy, Debug, PartialEq, Hash, Eq, Serialize, Deserialize)]
@@ -87,7 +87,7 @@ impl std::fmt::Display for Move {
 
 // Edge order: B R F L
 // Corner order: BL UB BR UR FR UF FL UL DB DR DF DL
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SuperFloppy {
     edges: [Edge; 4],
     corners: [Option<Corner>; 12],

@@ -25,7 +25,7 @@ done
 FOLDER_NAME=${PWD##*/}
 CRATE_NAME=$FOLDER_NAME # assume crate name is the same as the folder name
 CRATE_NAME_SNAKE_CASE="${CRATE_NAME//-/_}" # for those who name crates with-kebab-case
-WASM_BIN="static/${CRATE_NAME_SNAKE_CASE}_bg.wasm"
+WASM_BIN="ui/public/${CRATE_NAME_SNAKE_CASE}_bg.wasm"
 
 rm -f "${WASM_BIN}"
 
@@ -39,7 +39,8 @@ TARGET=$(cargo metadata --format-version=1 | jq --raw-output .target_directory)
 echo "Generating JS bindings for wasm…"
 TARGET_NAME="${CRATE_NAME_SNAKE_CASE}.wasm"
 WASM_PATH="${TARGET}/wasm32-unknown-unknown/${BUILD}/${TARGET_NAME}"
-wasm-bindgen "${WASM_PATH}" --out-dir ui/public --target web --no-typescript
+# using no-modules instead of the newer 'web' to interoperate with vite well
+wasm-bindgen "${WASM_PATH}" --out-dir ui/public --target no-modules --no-typescript
 
 cp prune.table ui/public/prune.table
 
