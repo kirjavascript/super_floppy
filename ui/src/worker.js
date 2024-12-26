@@ -14,5 +14,5 @@ const main = Comlink.wrap(self);
 
     Comlink.expose(solver);
 
-    await main.onBoot();
+    await main.onWorkerReady();
 })();
