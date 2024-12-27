@@ -5,8 +5,8 @@ const element = document.querySelector('#zdog');
 const ghostEl = document.querySelector('#ghost');
 
 const defaultRotate = {
-    x: -0.4,
-    y: 0.2,
+    x: -0.55,
+    y: 0.789,
 };
 
 const ghost = new Zdog.Illustration({
@@ -346,8 +346,6 @@ function render() {
     requestAnimationFrame(render);
     illo.updateRenderGraph();
     ghost.updateRenderGraph();
-
-    // document.querySelector('pre').textContent = JSON.stringify(state, 0, 4);
 }
 
 render();

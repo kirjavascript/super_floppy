@@ -33,13 +33,10 @@ addMenuItem('random state', async () => {
     updateRenderState(await solver.get_state());
 });
 
-[...'RLUD'].forEach(axis => {
-    [...' \'2'].forEach(type => {
-        const move = `${axis}${type}`.trim();
-
+[...'RLUD'].flatMap(move => [move, move+"'", move+'2'])
+    .forEach(move => {
         addMenuItem(move, async () => {
             await solver.do_moves(move);
             updateRenderState(await solver.get_state());
         });
     });
-});
