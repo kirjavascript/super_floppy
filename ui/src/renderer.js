@@ -1,4 +1,5 @@
 import Zdog, { TAU } from 'zdog';
+import { updateSolverState } from '../main';
 
 const element = document.querySelector('#zdog');
 const ghostEl = document.querySelector('#ghost');
@@ -295,6 +296,11 @@ function renderState() {
 
 renderState();
 
+export function updateRenderState(newState) {
+    Object.assign(state, newState);
+    renderState();
+}
+
 const ghostCtx = ghostEl.getContext('2d');
 
 element.addEventListener('click', (e) => {
@@ -314,6 +320,7 @@ element.addEventListener('click', (e) => {
             const edgeOrientation = state.edges[cubie.edgeIndex];
             state.edges[cubie.edgeIndex] = (edgeOrientation + 1) % 4;
             renderState();
+            updateSolverState(state).catch(console.error);
         } else if (cubie.isCorner) {
             const toggledCubie = cubies.find((cubie) => cubie.toggled);
 
@@ -327,6 +334,7 @@ element.addEventListener('click', (e) => {
                 state.corners[b] = tmp;
 
                 renderState();
+                updateSolverState(state).catch(console.error);
             } else {
                 cubie.toggle();
             }

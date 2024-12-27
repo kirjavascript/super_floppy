@@ -15,6 +15,13 @@ use serde_wasm_bindgen::{to_value, from_value};
 #[wasm_bindgen]
 pub struct SolverWrap {
     state: SuperFloppy,
+    prune_table: Option<PruningTable>,
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
 }
 
 #[wasm_bindgen]
@@ -23,6 +30,7 @@ impl SolverWrap {
     pub fn new() -> Self {
         SolverWrap {
             state: SuperFloppy::solved(),
+            prune_table: None,
         }
     }
 
@@ -37,8 +45,18 @@ impl SolverWrap {
     }
 
     #[wasm_bindgen]
+    pub fn set_pruning_table(&mut self, table: &[u8]) {
+        self.prune_table = Some(bincode::deserialize(&table).unwrap());
+    }
+
+    #[wasm_bindgen]
     pub fn set_random_state(&mut self) {
         self.state = SuperFloppy::random_state();
+    }
+
+    #[wasm_bindgen]
+    pub fn set_solved_state(&mut self) {
+        self.state = SuperFloppy::solved();
     }
 
     #[wasm_bindgen]

@@ -12,6 +12,9 @@ const main = Comlink.wrap(self);
     const { SolverWrap } = wasm_bindgen;
     const solver = new SolverWrap();
 
+    const table = await (await fetch('/prune.table')).arrayBuffer();
+    solver.set_pruning_table(new Uint8Array(table));
+
     Comlink.expose(solver);
 
     await main.onWorkerReady();
