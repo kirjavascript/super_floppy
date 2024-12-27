@@ -347,7 +347,7 @@ function render() {
     illo.updateRenderGraph();
     ghost.updateRenderGraph();
 
-    document.querySelector('pre').textContent = JSON.stringify(state, 0, 4);
+    // document.querySelector('pre').textContent = JSON.stringify(state, 0, 4);
 }
 
 render();

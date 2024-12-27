@@ -4,10 +4,8 @@ use solver::*;
 
 /* bindings needed:
  *
- * set_pruning_table
  * get_solutions
  */
-
 
 use wasm_bindgen::prelude::*;
 use serde_wasm_bindgen::{to_value, from_value};
