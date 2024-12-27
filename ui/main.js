@@ -19,10 +19,12 @@ const menu = document.querySelector('#menu');
 const solution = document.querySelector('#solution');
 
 function addMenuItem(label, callback) {
-    solution.textContent = '';
     const button = menu.appendChild(document.createElement('button'));
     button.textContent = label;
-    button.addEventListener('click', callback);
+    button.addEventListener('click', () => {
+        solution.textContent = '';
+        callback();
+    });
 }
 
 addMenuItem('solve', async () => {

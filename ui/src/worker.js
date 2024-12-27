@@ -2,7 +2,6 @@ importScripts('/super_floppy.js');
 globalThis.module = { exports: {} };
 importScripts('/comlink-worker.js');
 const { Comlink } = module.exports;
-delete module;
 
 const main = Comlink.wrap(self);
 
