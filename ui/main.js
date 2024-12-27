@@ -16,21 +16,19 @@ async function onWorkerReady() {
 // UI menu
 
 const menu = document.querySelector('#menu');
+const solution = document.querySelector('#solution');
 
 function addMenuItem(label, callback) {
+    solution.textContent = '';
     const button = menu.appendChild(document.createElement('button'));
     button.textContent = label;
     button.addEventListener('click', callback);
 }
 
-const solution = document.querySelector('#solution');
-
 addMenuItem('solve', async () => {
     solution.textContent = 'solving ...';
     solution.textContent = await solver.solve();
 });
-
-// TODO: input scramble
 
 addMenuItem('solved state', async () => {
     await solver.set_solved_state();
@@ -49,3 +47,10 @@ addMenuItem('random state', async () => {
             updateRenderState(await solver.get_state());
         });
     });
+
+const scramble = menu.appendChild(document.createElement('input'));
+
+addMenuItem('do moves', async () => {
+    await solver.do_moves(scramble.value.replace(/([RLUD](['2])?)/g, '$1 '));
+    updateRenderState(await solver.get_state());
+});
