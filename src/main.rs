@@ -1,3 +1,5 @@
+mod solver;
+
 use solver::*;
 use std::io::Read;
 

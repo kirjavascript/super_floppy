@@ -1,2 +1,5 @@
 /target
 prune.table
+
+# Local Netlify folder
+.netlify

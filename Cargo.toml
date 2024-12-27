@@ -1,11 +1,22 @@
 [package]
-name = "solver"
+name = "super_floppy"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "super_floppy"
+path = "src/main.rs"
+
+[lib]
+crate-type = ["cdylib"]
 
 [dependencies]
 bincode = "*"
 serde = { version = "1.0", features = ["derive"] }
-rand = "*"
+rand = "0.8"
+
+# [target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.2", features = ["js"] }
+wasm-bindgen = "=0.2.95"
+serde-wasm-bindgen = "0.5"
+js-sys="0.3"
