@@ -23,6 +23,15 @@ function addMenuItem(label, callback) {
     button.addEventListener('click', callback);
 }
 
+const solution = document.querySelector('#solution');
+
+addMenuItem('solve', async () => {
+    solution.textContent = 'solving ...';
+    solution.textContent = await solver.solve();
+});
+
+// TODO: input scramble
+
 addMenuItem('solved state', async () => {
     await solver.set_solved_state();
     updateRenderState(await solver.get_state());
